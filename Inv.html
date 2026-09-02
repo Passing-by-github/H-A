@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حفل زفاف أحمد &amp; شيماء</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF1E6;
+    --ink:#5F6E68;
+    --ink-soft:#8B9791;
+    --rose-deep:#CB7C89;
+    --gold:#C9A46B;
+    --line:rgba(201,164,107,.42);
+    --rail:clamp(22px,5.6vw,58px);
+    --vine:clamp(52px,13vw,110px);
+    --ar:"Amiri","Traditional Arabic",serif;
+    --la:"Cormorant Garamond",Georgia,serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    color:var(--ink);font-family:var(--ar);line-height:1.95;overflow-x:hidden;
+    background:
+      repeating-linear-gradient(94deg,rgba(150,120,80,.035) 0 2px,transparent 2px 7px),
+      radial-gradient(120% 60% at 50% 0%,#FDF7EE,transparent 60%),
+      var(--cream);
+  }
+  body.locked{overflow:hidden;height:100%}
+
+  /* ===== rods framing the page (top & bottom) ===== */
+  .rail{
+    position:fixed;left:0;right:0;height:var(--rail);z-index:30;pointer-events:none;
+    background:
+      linear-gradient(180deg,#070504 0%,#241811 16%,#5B4130 46%,#3A2A1E 64%,#160E09 86%,#050302 100%);
+  }
+  .rail::before{
+    content:"";position:absolute;inset:0;opacity:.55;
+    background:repeating-linear-gradient(180deg,rgba(255,225,190,.07) 0 1px,transparent 1px 5px);
+  }
+  .rail::after{content:"";position:absolute;left:0;right:0;height:18px}
+  .rail.t{top:0}
+  .rail.t::after{bottom:-18px;background:linear-gradient(180deg,rgba(56,38,18,.32),transparent)}
+  .rail.b{bottom:0}
+  .rail.b::after{top:-18px;background:linear-gradient(0deg,rgba(56,38,18,.32),transparent)}
+
+  .cap{
+    position:absolute;top:50%;transform:translateY(-50%);
+    height:calc(100% + 16px);width:19px;border-radius:5px;z-index:2;
+    background:linear-gradient(180deg,#080503,#4E3826 42%,#2A1D14 72%,#070403);
+    box-shadow:0 2px 7px rgba(0,0,0,.6);
+  }
+  .cap::after{
+    content:"";position:absolute;top:50%;transform:translateY(-50%);
+    height:calc(100% + 13px);width:15px;border-radius:50%;
+    background:radial-gradient(100% 62% at 36% 40%,#6E4F35,#2A1C12 70%,#120B07);
+    box-shadow:0 2px 6px rgba(0,0,0,.5);
+  }
+  .cap.l{left:11px}
+  .cap.l::after{left:-16px}
+  .cap.r{right:11px}
+  .cap.r::after{right:-16px}
+
+  /* ===== rolled scroll intro ===== */
+  .stage{position:fixed;inset:0;z-index:60;transition:opacity .7s ease}
+  .stage.done{opacity:0;pointer-events:none}
+  .cloth{
+    position:absolute;inset:0;
+    background:radial-gradient(78% 58% at 50% 46%,#2C2823 0%,#151310 58%,#080706 100%);
+  }
+  .cloth::after{
+    content:"";position:absolute;inset:0;opacity:.4;
+    background:
+      repeating-linear-gradient(58deg,rgba(255,255,255,.04) 0 2px,transparent 2px 5px),
+      repeating-linear-gradient(-58deg,rgba(0,0,0,.25) 0 2px,transparent 2px 6px);
+  }
+  .drop{
+    position:absolute;left:50%;top:calc(50% + 58px);transform:translateX(-50%);
+    width:min(88vw,486px);height:34px;border-radius:50%;
+    background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);
+    filter:blur(4px);transition:opacity .5s ease;
+  }
+  .stage.open .drop{opacity:0}
+
+  .scene{
+    position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+  }
+
+  .roll{
+    position:relative;display:flex;flex-direction:column;align-items:stretch;
+    width:min(86vw,470px);height:116px;
+    transition:height 1.1s cubic-bezier(.5,.02,.2,1) .35s,width .9s cubic-bezier(.45,.02,.2,1) .8s;
+  }
+  .stage.open .roll{width:100vw;height:100svh}
+
+  .roller{
+    position:relative;flex:0 0 48px;border-radius:7px;
+    background:linear-gradient(180deg,#070504 0%,#241811 16%,#5B4130 46%,#3A2A1E 64%,#160E09 86%,#050302 100%);
+    transition:flex-basis 1.1s cubic-bezier(.5,.02,.2,1) .35s,border-radius .6s ease .55s;
+  }
+  .stage.open .roller{flex-basis:var(--rail);border-radius:0}
+
+  .roller .paper{ /* paper wound on the rod — unwinds as it opens */
+    position:absolute;top:0;bottom:0;left:30px;right:30px;z-index:1;border-radius:6px;
+    background:linear-gradient(180deg,
+      rgba(105,80,50,.55) 0%,rgba(255,255,255,.75) 15%,#FCF4E8 42%,#F1E1CA 84%,rgba(105,80,50,.5) 100%);
+    box-shadow:inset 0 0 0 1px rgba(150,120,85,.22);
+    transition:opacity .6s ease .5s;
+  }
+  .roller .paper::after{
+    content:"";position:absolute;left:6%;right:6%;bottom:27%;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(135,105,70,.65),transparent);
+  }
+  .stage.open .roller .paper{opacity:0}
+
+  .sheet{ /* the fold of paper between the two tubes */
+    position:relative;flex:1;z-index:0;
+    background:linear-gradient(180deg,rgba(120,95,60,.45),#F6E9D8 38%,#FDF7EE 62%,rgba(120,95,60,.4));
+    transition:background 1s ease .7s;
+  }
+  .stage.open .sheet{background:linear-gradient(180deg,#FDF7EE,#FBF1E6 45%,#FAEFE3)}
+
+  /* ribbon, cord, bow, tassel — drawn in screen space over the resting scroll */
+  .dress{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;
+    width:min(86vw,470px);height:116px;
+    transition:opacity .5s ease,transform .7s ease;
+  }
+  .stage.open .dress{opacity:0;transform:translate(-50%,-6%)}
+  .sash{
+    position:absolute;top:-20px;bottom:-20px;left:calc(50% - 27px);width:54px;
+    background:linear-gradient(102deg,#A8853F,#F1DEAC 26%,#C6A165 52%,#EEDCA6 76%,#9E7B39);
+    transform:rotate(-4deg);box-shadow:0 3px 8px rgba(0,0,0,.4);
+  }
+  .sash::after{
+    content:"";position:absolute;inset:0;opacity:.5;
+    background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 1px,transparent 1px 4px);
+  }
+  .cord{
+    position:absolute;top:-34px;bottom:-34px;left:calc(50% + 24px);width:9px;
+    background:linear-gradient(180deg,#0d0d0d,#333,#0a0a0a);border-radius:5px;transform:rotate(5deg);
+  }
+  .cord.two{left:calc(50% - 36px);transform:rotate(-6deg)}
+  .knot{position:absolute;left:50%;top:-40px;transform:translateX(-50%);width:200px;height:84px}
+  .tassel{position:absolute;left:calc(50% + 12px);top:82px;width:58px;height:104px}
+
+  .seal{
+    position:absolute;z-index:12;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:9rem;height:3.4rem;border-radius:7px;cursor:pointer;
+    border:1px solid rgba(52,36,16,.6);
+    background:linear-gradient(150deg,#DDB87D,#C69C5E 46%,#B4874A);
+    color:#3A2A12;font-family:var(--ar);font-size:1.35rem;
+    display:grid;place-items:center;
+    box-shadow:0 12px 22px -10px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.5);
+    transition:transform .4s ease,opacity .45s ease;
+  }
+  .seal b{font-weight:400;letter-spacing:.06em;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  .seal::before{
+    content:"";position:absolute;right:.85rem;top:50%;transform:translateY(-50%);
+    width:.5rem;height:.5rem;border-radius:50%;background:#2A1D0C;box-shadow:inset 0 1px 2px rgba(0,0,0,.85);
+  }
+  .seal:hover,.seal:focus-visible{transform:translate(-50%,-50%) scale(1.05)}
+  .seal:focus-visible{outline:2px solid var(--gold);outline-offset:6px}
+  .stage.open .seal{opacity:0;pointer-events:none}
+  .hint{
+    position:absolute;z-index:12;left:0;right:0;top:calc(50% + 8.2rem);text-align:center;
+    color:#E7D6B6;font-size:1rem;transition:opacity .35s ease;
+  }
+  .stage.open .hint{opacity:0}
+
+  /* ===== page ===== */
+  .page{position:relative;padding-block:calc(var(--rail) + .6rem)}
+  .vine{
+    position:absolute;top:2rem;bottom:2rem;width:var(--vine);z-index:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2096%20360%22%20width%3D%2296%22%20height%3D%22360%22%3E%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%239BA88C%22%20stroke-width%3D%221.15%22%20stroke-linecap%3D%22round%22%3E%20%3Cpath%20d%3D%22M48%200%20C62%2034%2064%2066%2050%20100%20C36%20134%2034%20166%2048%20200%20C62%20234%2064%20268%2050%20302%20C42%20322%2046%20340%2048%20360%22%2F%3E%20%3Cpath%20d%3D%22M50%20100%20C36%2092%2026%2078%2022%2060%22%2F%3E%20%3Cpath%20d%3D%22M48%20200%20C62%20190%2072%20174%2076%20154%22%2F%3E%20%3Cpath%20d%3D%22M50%20302%20C36%20294%2026%20280%2022%20262%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%239BA88C%22%20stroke-width%3D%221.05%22%3E%20%3Cpath%20d%3D%22M56%2022%20C68%2016%2080%2020%2084%2030%20C74%2038%2062%2034%2056%2022%20Z%22%2F%3E%20%3Cpath%20d%3D%22M42%2052%20C30%2046%2018%2050%2014%2060%20C24%2068%2036%2064%2042%2052%20Z%22%2F%3E%20%3Cpath%20d%3D%22M56%20132%20C68%20126%2080%20130%2084%20140%20C74%20148%2062%20144%2056%20132%20Z%22%2F%3E%20%3Cpath%20d%3D%22M40%20168%20C28%20162%2016%20166%2012%20176%20C22%20184%2034%20180%2040%20168%20Z%22%2F%3E%20%3Cpath%20d%3D%22M58%20232%20C70%20226%2082%20230%2086%20240%20C76%20248%2064%20244%2058%20232%20Z%22%2F%3E%20%3Cpath%20d%3D%22M42%20268%20C30%20262%2018%20266%2014%20276%20C24%20284%2036%20280%2042%20268%20Z%22%2F%3E%20%3Cpath%20d%3D%22M56%20330%20C68%20324%2080%20328%2084%20338%20C74%20346%2062%20342%2056%20330%20Z%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23B99A78%22%20stroke-width%3D%221.05%22%3E%20%3Cellipse%20cx%3D%2222%22%20cy%3D%2260%22%20rx%3D%224.6%22%20ry%3D%226.2%22%2F%3E%3Cellipse%20cx%3D%2231%22%20cy%3D%2266%22%20rx%3D%226.2%22%20ry%3D%224.6%22%20transform%3D%22rotate%2820%2031%2066%29%22%2F%3E%20%3Cellipse%20cx%3D%2227%22%20cy%3D%2276%22%20rx%3D%225.4%22%20ry%3D%224.6%22%20transform%3D%22rotate%28-24%2027%2076%29%22%2F%3E%3Cellipse%20cx%3D%2214%22%20cy%3D%2274%22%20rx%3D%225.4%22%20ry%3D%224.6%22%20transform%3D%22rotate%2824%2014%2074%29%22%2F%3E%20%3Cellipse%20cx%3D%2211%22%20cy%3D%2264%22%20rx%3D%226.2%22%20ry%3D%224.6%22%20transform%3D%22rotate%28-20%2011%2064%29%22%2F%3E%20%3Ccircle%20cx%3D%2221%22%20cy%3D%2269%22%20r%3D%222%22%2F%3E%20%3Cellipse%20cx%3D%2276%22%20cy%3D%22154%22%20rx%3D%224.6%22%20ry%3D%226.2%22%2F%3E%3Cellipse%20cx%3D%2285%22%20cy%3D%22160%22%20rx%3D%226.2%22%20ry%3D%224.6%22%20transform%3D%22rotate%2820%2085%20160%29%22%2F%3E%20%3Cellipse%20cx%3D%2281%22%20cy%3D%22170%22%20rx%3D%225.4%22%20ry%3D%224.6%22%20transform%3D%22rotate%28-24%2081%20170%29%22%2F%3E%3Cellipse%20cx%3D%2268%22%20cy%3D%22168%22%20rx%3D%225.4%22%20ry%3D%224.6%22%20transform%3D%22rotate%2824%2068%20168%29%22%2F%3E%20%3Cellipse%20cx%3D%2265%22%20cy%3D%22158%22%20rx%3D%226.2%22%20ry%3D%224.6%22%20transform%3D%22rotate%28-20%2065%20158%29%22%2F%3E%20%3Ccircle%20cx%3D%2275%22%20cy%3D%22163%22%20r%3D%222%22%2F%3E%20%3Cellipse%20cx%3D%2222%22%20cy%3D%22262%22%20rx%3D%224.4%22%20ry%3D%226%22%2F%3E%3Cellipse%20cx%3D%2231%22%20cy%3D%22268%22%20rx%3D%226%22%20ry%3D%224.4%22%20transform%3D%22rotate%2820%2031%20268%29%22%2F%3E%20%3Cellipse%20cx%3D%2227%22%20cy%3D%22277%22%20rx%3D%225.2%22%20ry%3D%224.4%22%20transform%3D%22rotate%28-24%2027%20277%29%22%2F%3E%3Cellipse%20cx%3D%2214%22%20cy%3D%22275%22%20rx%3D%225.2%22%20ry%3D%224.4%22%20transform%3D%22rotate%2824%2014%20275%29%22%2F%3E%20%3Cellipse%20cx%3D%2211%22%20cy%3D%22266%22%20rx%3D%226%22%20ry%3D%224.4%22%20transform%3D%22rotate%28-20%2011%20266%29%22%2F%3E%20%3Ccircle%20cx%3D%2221%22%20cy%3D%22270%22%20r%3D%221.9%22%2F%3E%20%3Cpath%20d%3D%22M62%2088%20C67%2092%2067%2098%2062%20101%20C57%2098%2057%2092%2062%2088%20Z%22%2F%3E%20%3Cpath%20d%3D%22M34%20214%20C39%20218%2039%20224%2034%20227%20C29%20224%2029%20218%2034%20214%20Z%22%2F%3E%20%3Cpath%20d%3D%22M64%20296%20C69%20300%2069%20306%2064%20309%20C59%20306%2059%20300%2064%20296%20Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E");
+    background-repeat:repeat-y;background-size:100% auto;opacity:.5;
+  }
+  .vine.l{left:clamp(2px,1.8vw,22px)}
+  .vine.r{right:clamp(2px,1.8vw,22px);transform:scaleX(-1)}
+  @media (max-width:640px){ .vine{opacity:.26} }
+
+  .wrap{position:relative;z-index:1;max-width:34rem;margin:0 auto;padding:0 clamp(1rem,5vw,2rem)}
+  @media (min-width:820px){ .wrap{max-width:36rem} }
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.3,1)}
+  .in .reveal{opacity:1;transform:none}
+
+  .hero{min-height:100svh;display:grid;align-content:center;text-align:center;padding:5rem 0 4rem}
+  .bism{font-size:1.1rem;color:var(--ink-soft);margin:0 0 2.2rem}
+  .kicker{font-family:var(--la);font-size:.95rem;letter-spacing:.32em;color:var(--gold);margin:0 0 1.6rem;direction:ltr}
+  .couple{font-size:clamp(2.1rem,9vw,3.2rem);font-weight:400;line-height:1.5;margin:0}
+  .couple .amp{font-family:var(--la);font-style:italic;color:var(--rose-deep);font-size:.55em;padding:0 .25em}
+  .hero-date{font-family:var(--la);font-size:1.35rem;letter-spacing:.3em;margin:1.8rem 0 .5rem;direction:ltr}
+  .hero-place{color:var(--ink-soft);margin:0;font-size:1.05rem}
+  .scroll-cue{margin-top:3.2rem;color:var(--ink-soft);font-family:var(--la);font-size:.85rem;letter-spacing:.28em;direction:ltr}
+  .scroll-cue i{display:block;width:1px;height:3rem;background:linear-gradient(var(--line),transparent);margin:.7rem auto 0}
+
+  section{padding:4.2rem 0;text-align:center}
+  .tag{font-size:.95rem;color:var(--gold);margin:0 0 .5rem;letter-spacing:.08em}
+  .tag::after{content:"";display:block;width:2.6rem;height:1px;background:var(--line);margin:.7rem auto 0}
+  h2{font-weight:400;font-size:1.55rem;margin:1.1rem 0 1.8rem}
+  p{margin:0 0 .7rem}
+  .soft{color:var(--ink-soft)}
+  .big{font-size:1.3rem}
+  .hosts{font-size:1.35rem;line-height:2.1;margin:.8rem 0 1.2rem}
+
+  .flourish{display:block;width:min(15rem,72%);margin:2.2rem auto 0;opacity:.75}
+
+  .datebox{
+    display:inline-grid;grid-auto-flow:column;align-items:center;gap:clamp(.9rem,5vw,1.8rem);
+    border-block:1px solid var(--line);padding:1.2rem clamp(.8rem,4vw,1.6rem);direction:ltr;
+  }
+  .datebox b{display:block;font-family:var(--la);font-weight:400;font-size:clamp(2rem,9vw,2.8rem);line-height:1}
+  .datebox span{display:block;font-size:.9rem;color:var(--ink-soft);margin-top:.35rem}
+  .hijri{margin-top:1.3rem;color:var(--ink-soft)}
+  .count{display:flex;justify-content:center;gap:clamp(.8rem,4.5vw,1.7rem);margin-top:2.2rem;direction:ltr}
+  .count b{display:block;font-family:var(--la);font-weight:400;font-size:1.7rem;line-height:1.2}
+  .count span{font-size:.85rem;color:var(--ink-soft)}
+
+  .program{list-style:none;margin:0;padding:0;display:grid;gap:1.3rem;text-align:start}
+  .program li{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--line)}
+  .program li:last-child{border-bottom:0;padding-bottom:0}
+  .program .ico{width:2.6rem;height:2.6rem;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%}
+  .program .ico svg{width:1.15rem;height:1.15rem}
+  .program .label{font-size:1.18rem}
+  .program .time{font-family:var(--la);font-size:1.4rem;color:var(--rose-deep);letter-spacing:.04em}
+
+  .place-card{border:1px solid var(--line);background:rgba(255,255,255,.55);padding:2rem 1.4rem;display:grid;gap:1.1rem;justify-items:center}
+  .place-card .name{font-size:1.5rem;margin:0}
+  .btn{display:inline-block;text-decoration:none;color:#7A6238;border:1px solid rgba(201,164,107,.75);border-radius:999px;padding:.6rem 1.6rem;font-size:1rem;background:rgba(255,255,255,.6);transition:background .3s,transform .3s,border-color .3s}
+  .btn:hover,.btn:focus-visible{background:#fff;border-color:var(--gold);transform:translateY(-1px)}
+  .btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+  .notes{display:grid;gap:1rem}
+  .note{border:1px solid var(--line);background:rgba(255,255,255,.5);padding:1.2rem;font-size:1.08rem}
+  .note b{color:var(--rose-deep);font-weight:400}
+
+  .closing{padding:4rem 0 2rem;text-align:center}
+  .closing p{font-size:1.28rem}
+  footer{text-align:center;color:var(--ink-soft);font-family:var(--la);font-size:.85rem;letter-spacing:.2em;padding:1rem 0 3rem;direction:ltr}
+
+  .petal{position:fixed;top:-6vh;z-index:3;pointer-events:none;opacity:0}
+  @keyframes fall{
+    0%{opacity:0;transform:translate3d(0,-10vh,0) rotate(0)}
+    12%{opacity:.8}
+    100%{opacity:0;transform:translate3d(var(--dx),108vh,0) rotate(var(--spin))}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body class="locked">
+
+<!-- ROLLED SCROLL -->
+<div class="stage" id="stage">
+  <div class="cloth"></div>
+  <div class="drop"></div>
+
+  <div class="scene">
+    <div class="roll">
+      <div class="roller"><span class="paper"></span><span class="cap l"></span><span class="cap r"></span></div>
+      <div class="sheet"></div>
+      <div class="roller"><span class="paper"></span><span class="cap l"></span><span class="cap r"></span></div>
+    </div>
+  </div>
+
+  <div class="dress" aria-hidden="true">
+    <div class="sash"></div>
+    <div class="cord"></div>
+    <div class="cord two"></div>
+    <svg class="knot" viewBox="0 0 200 84" xmlns="http://www.w3.org/2000/svg">
+      <g fill="none" stroke="#111" stroke-width="5" stroke-linecap="round">
+        <path d="M100 48 C74 22 46 16 36 28 c-9 12 13 26 34 26"/>
+        <path d="M100 48 c26 -26 54 -32 64 -20 c9 12 -13 26 -34 26"/>
+      </g>
+      <g fill="#D3B77F" opacity=".96">
+        <path d="M100 50 C76 24 48 32 44 45 c-3 11 24 15 40 7 z"/>
+        <path d="M100 50 c24 -26 52 -18 56 -5 c3 11 -24 15 -40 7 z"/>
+      </g>
+      <g fill="#EEDCAC" opacity=".75">
+        <path d="M100 50 C84 37 70 37 64 44 c-4 6 15 11 27 6 z"/>
+        <path d="M100 50 c16 -13 30 -13 36 -6 c4 6 -15 11 -27 6 z"/>
+      </g>
+      <path d="M96 74 C90 66 92 58 100 52 c8 6 10 14 4 22 z" fill="#151515"/>
+      <circle cx="100" cy="51" r="8.5" fill="#161616"/>
+    </svg>
+    <svg class="tassel" viewBox="0 0 58 104" xmlns="http://www.w3.org/2000/svg">
+      <path d="M29 0 C24 14 32 22 29 32" stroke="#141414" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="29" cy="37" rx="11" ry="9" fill="#1b1b1b"/>
+      <path d="M18 42 h22 v4 h-22 z" fill="#151515"/>
+      <g stroke="#141414" stroke-width="2.6" stroke-linecap="round">
+        <path d="M20 46 C18 64 17 78 16 94"/><path d="M24 46 C23 64 22 80 21 98"/>
+        <path d="M29 46 V100"/><path d="M34 46 C35 64 36 80 37 98"/>
+        <path d="M38 46 C40 64 41 78 42 94"/>
+      </g>
+    </svg>
+  </div>
+
+  <button class="seal" id="openBtn" aria-label="افتح الدعوة"><b>أ &amp; ش</b></button>
+  <p class="hint">اضغط لفتح الدعوة</p>
+</div>
+
+<div class="rail t" aria-hidden="true"><span class="cap l"></span><span class="cap r"></span></div>
+<div class="rail b" aria-hidden="true"><span class="cap l"></span><span class="cap r"></span></div>
+
+<!-- PAGE -->
+<div class="page" id="page">
+  <div class="vine l" aria-hidden="true"></div>
+  <div class="vine r" aria-hidden="true"></div>
+
+  <div class="wrap">
+
+    <header class="hero">
+      <p class="bism reveal">بسم الله الرحمن الرحيم</p>
+      <p class="kicker reveal">Wedding Invitation</p>
+      <h1 class="couple reveal">أحمد<span class="amp">&amp;</span>شيماء</h1>
+      <p class="hero-date reveal">09 · 09 · 2026</p>
+      <p class="hero-place reveal">قاعة الدانة البيضاء</p>
+      <p class="scroll-cue reveal">scroll<i></i></p>
+    </header>
+
+    <section>
+      <p class="tag">الدعوة</p>
+      <h2>تتشرف بدعوتكم</h2>
+      <p class="soft">تتشرف كلٌّ من</p>
+      <p class="hosts">أم أحمد و أم علي</p>
+      <p class="soft">بدعوتكم لحضور حفل زفاف ابنيهما</p>
+      <p class="big">أحمد <span style="color:var(--rose-deep);font-family:var(--la)">&amp;</span> شيماء</p>
+      <p class="soft" style="margin-top:1.4rem">وذلك بمشيئة الله تعالى</p>
+      <svg viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="flourish">
+  <g fill="none" stroke="#B99A78" stroke-width="1">
+    <path d="M10 20 C50 20 74 20 96 20" stroke="#A79878"/>
+    <path d="M210 20 C170 20 146 20 124 20" stroke="#A79878"/>
+    <path d="M96 20 C90 14 82 12 74 14" stroke="#9BA88C"/>
+    <path d="M124 20 C130 14 138 12 146 14" stroke="#9BA88C"/>
+    <path d="M96 20 C90 26 82 28 74 26" stroke="#9BA88C"/>
+    <path d="M124 20 C130 26 138 28 146 26" stroke="#9BA88C"/>
+    <ellipse cx="110" cy="12" rx="4" ry="5.4"/>
+    <ellipse cx="118" cy="18" rx="5.4" ry="4" transform="rotate(20 118 18)"/>
+    <ellipse cx="115" cy="27" rx="4.6" ry="4" transform="rotate(-24 115 27)"/>
+    <ellipse cx="105" cy="27" rx="4.6" ry="4" transform="rotate(24 105 27)"/>
+    <ellipse cx="102" cy="18" rx="5.4" ry="4" transform="rotate(-20 102 18)"/>
+    <circle cx="110" cy="20" r="1.8"/>
+  </g>
+</svg>
+    </section>
+
+    <section>
+      <p class="tag">الموعد</p>
+      <h2>يوم الأربعاء</h2>
+      <div class="datebox">
+        <div><b>09</b><span>سبتمبر</span></div>
+        <div style="color:var(--line)">·</div>
+        <div><b>09</b><span>SEPTEMBER</span></div>
+        <div style="color:var(--line)">·</div>
+        <div><b>2026</b><span>السنة</span></div>
+      </div>
+      <p class="hijri">الموافق ٢٧ / ٣ / ١٤٤٨ هـ</p>
+      <div class="count" id="count">
+        <div><b id="d">—</b><span>يوم</span></div>
+        <div><b id="h">—</b><span>ساعة</span></div>
+        <div><b id="m">—</b><span>دقيقة</span></div>
+        <div><b id="s">—</b><span>ثانية</span></div>
+      </div>
+    </section>
+
+    <section>
+      <p class="tag">البرنامج</p>
+      <h2>جدول الحفل</h2>
+      <ul class="program">
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8A6E45" stroke-width="1.3"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/></svg></span>
+          <span class="label">الاستقبال</span><span class="time">9:00</span>
+        </li>
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8A6E45" stroke-width="1.3"><circle cx="12" cy="15" r="5.5"/><path d="M9.5 9.5 12 4l2.5 5.5"/></svg></span>
+          <span class="label">الزفة</span><span class="time">9:30</span>
+        </li>
+        <li>
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#8A6E45" stroke-width="1.3"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.4"/></svg></span>
+          <span class="label">وجبة العشاء</span><span class="time">11:00</span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <p class="tag">المكان</p>
+      <h2>قاعة الدانة البيضاء</h2>
+      <div class="place-card">
+        <p class="name">قاعة الدانة البيضاء</p>
+        <p class="soft" style="margin:0">اضغط لفتح الموقع على الخريطة</p>
+        <a class="btn" href="https://maps.app.goo.gl/qofxFwzVuu3EJaAP8" target="_blank" rel="noopener">فتح في خرائط جوجل</a>
+        <a class="btn" id="icsBtn" href="#" download="wedding.ics">أضف إلى التقويم</a>
+      </div>
+    </section>
+
+    <section>
+      <p class="tag">ملاحظات</p>
+      <h2>للإحاطة</h2>
+      <div class="notes">
+        <p class="note"><b>ممنوع اصطحاب الأطفال</b> منعاً باتاً</p>
+        <p class="note"><b>ممنوع التصوير</b> واستخدام الجوالات داخل القاعة</p>
+      </div>
+    </section>
+
+    <div class="closing">
+      <p>وبحضوركم يتمّ لنا الفرح والسرور</p>
+      <svg viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="flourish">
+  <g fill="none" stroke="#B99A78" stroke-width="1">
+    <path d="M10 20 C50 20 74 20 96 20" stroke="#A79878"/>
+    <path d="M210 20 C170 20 146 20 124 20" stroke="#A79878"/>
+    <path d="M96 20 C90 14 82 12 74 14" stroke="#9BA88C"/>
+    <path d="M124 20 C130 14 138 12 146 14" stroke="#9BA88C"/>
+    <path d="M96 20 C90 26 82 28 74 26" stroke="#9BA88C"/>
+    <path d="M124 20 C130 26 138 28 146 26" stroke="#9BA88C"/>
+    <ellipse cx="110" cy="12" rx="4" ry="5.4"/>
+    <ellipse cx="118" cy="18" rx="5.4" ry="4" transform="rotate(20 118 18)"/>
+    <ellipse cx="115" cy="27" rx="4.6" ry="4" transform="rotate(-24 115 27)"/>
+    <ellipse cx="105" cy="27" rx="4.6" ry="4" transform="rotate(24 105 27)"/>
+    <ellipse cx="102" cy="18" rx="5.4" ry="4" transform="rotate(-20 102 18)"/>
+    <circle cx="110" cy="20" r="1.8"/>
+  </g>
+</svg>
+    </div>
+    <footer>Ahmed &amp; Shaimaa · 2026</footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stage=document.getElementById('stage'),
+      btn=document.getElementById('openBtn'),
+      page=document.getElementById('page'),
+      reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  btn.addEventListener('click',function open(){
+    btn.removeEventListener('click',open);
+    if(reduce){ stage.style.display='none'; document.body.classList.remove('locked'); page.classList.add('in'); return; }
+    stage.classList.add('open');
+    setTimeout(function(){ stage.classList.add('done'); page.classList.add('in'); document.body.classList.remove('locked'); petals(); },1800);
+    setTimeout(function(){ stage.style.display='none'; },2550);
+  });
+
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.16});
+  document.querySelectorAll('section,.closing').forEach(function(s){
+    s.classList.add('reveal-parent');
+    s.style.opacity='0';s.style.transform='translateY(18px)';
+    s.style.transition='opacity 1s ease,transform 1s cubic-bezier(.2,.7,.3,1)';
+    io.observe(s);
+  });
+  var st=document.createElement('style');
+  st.textContent='.reveal-parent.in{opacity:1!important;transform:none!important}';
+  document.head.appendChild(st);
+
+  function petals(){
+    var colors=['#E0CDA9','#CBBDA0','#EADCC0','#BFC8B2','#D8C4A2'];
+    for(var i=0;i<12;i++){(function(i){setTimeout(function(){
+      var p=document.createElement('span');p.className='petal';
+      var size=7+Math.random()*9;
+      p.style.cssText='left:'+(Math.random()*100)+'vw;width:'+size+'px;height:'+(size*.66)+'px;background:'+colors[i%colors.length]+
+        ';border-radius:60% 40% 55% 45%/60% 60% 40% 40%;--dx:'+((Math.random()*160)-80)+'px;--spin:'+(Math.random()*540-270)+
+        'deg;animation:fall '+(7+Math.random()*5)+'s linear forwards;';
+      document.body.appendChild(p);setTimeout(function(){p.remove();},13000);
+    },i*400);})(i);}
+  }
+
+  var target=new Date('2026-09-09T21:00:00+03:00').getTime();
+  function pad(n){return n<10?'0'+n:''+n;}
+  function tick(){
+    var diff=Math.max(0,target-Date.now());
+    document.getElementById('d').textContent=Math.floor(diff/864e5);
+    document.getElementById('h').textContent=pad(Math.floor(diff%864e5/36e5));
+    document.getElementById('m').textContent=pad(Math.floor(diff%36e5/6e4));
+    document.getElementById('s').textContent=pad(Math.floor(diff%6e4/1e3));
+  }
+  tick();setInterval(tick,1000);
+
+  var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//wedding//AR','BEGIN:VEVENT','UID:'+Date.now()+'@wedding',
+    'DTSTAMP:20260902T000000Z','DTSTART:20260909T180000Z','DTEND:20260909T210000Z',
+    'SUMMARY:حفل زفاف أحمد و شيماء','LOCATION:قاعة الدانة البيضاء',
+    'DESCRIPTION:الاستقبال 9:00 - الزفة 9:30 - العشاء 11:00','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  document.getElementById('icsBtn').href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+})();
+</script>
+</body>
+</html>
